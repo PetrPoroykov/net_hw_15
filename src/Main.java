@@ -10,20 +10,21 @@ public class Main {
     static StringBuilder log = new StringBuilder();
 
     public static void main(String[] args) {
-        File src = new File("D://Games/src");
-        mkDir(src);
-        File res = new File("D://Games/res");
-        mkDir(res);
-        File savegames = new File("D://Games/savegames");
-        mkDir(savegames);
-        File temp = new File("D://Games/temp");
-        mkDir(temp);
-        File drawables = new File("D://Games/res/drawables");
-        mkDir(drawables);
-        File vectors = new File("D://Games/res/vectors");
-        mkDir(vectors);
-        File icons = new File("D://Games/res/icons");
-        mkDir(icons);
+
+        List<String> directories = new ArrayList<>(List.of(
+                "D://Games/src",
+                "D://Games/res",
+                "D://Games/savegames",
+                "D://Games/temp",
+                "D://Games/res/drawables",
+                "D://Games/res/vectors",
+                "D://Games/res/icons"
+        ));
+
+        for (String directory : directories) {
+            mkDir(directory);
+        }
+
         File tempTxt = new File("D://Games/temp/temp.txt");
         mkFile(tempTxt);
         File mainJava = new File("D://Games/src/Main.java");
@@ -44,13 +45,12 @@ public class Main {
         progressList.add(new GameProgress(4, 5, 6, 4.6));
         progressList.add(new GameProgress(7, 8, 9, 4.7));
 
-        for (int i = 0; i < progressList.size(); i++) {
-            saveGame("D://Games/savegames/save" + i + ".dat", progressList.get(i));
-        }
-        File[] files = savegames.listFiles();
         List<String> filesAbsolutePath = new ArrayList<>();
-        for (int i = 0; i < files.length; i++) {
-            filesAbsolutePath.add(files[i].getAbsolutePath());
+        String nameSaveFile;
+        for (int i = 0; i < progressList.size(); i++) {
+            nameSaveFile = "D://Games/savegames/save" + i + ".dat";
+            saveGame(nameSaveFile, progressList.get(i));
+            filesAbsolutePath.add(nameSaveFile);
         }
 
         zipFiles("D://Games/savegames/save.zip", filesAbsolutePath);
@@ -61,10 +61,11 @@ public class Main {
 
         GameProgress gameProgress = null;
 
-        deserialization("D://Games/savegames/unzipped_save0.dat", gameProgress);
+        deserialization("D://Games/savegames/unzipped_save1.dat", gameProgress);
     }
 
-    public static void mkDir(File dir) {
+    public static void mkDir(String path) {
+        File dir = new File(path);
         String inf;
         if (dir.mkdir()) {
             inf = "Директория " + dir.getName() + " создана. Полный путь - " + dir.getAbsolutePath();
